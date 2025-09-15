@@ -1,3 +1,21 @@
-Playwright Product Checkout Automation
+QA Automation Framework
+🧪 QA Automation Framework – Playwright + JavaScript
+This is an industry-grade QA Automation Framework built using Playwright with JavaScript. Designed for scalability, clarity, and CI/CD readiness.
 
-This repository contains an automated test framework using Playwright for testing flow of an e-commerce website-- (https://hyue.in/)
+🚀 Features
+Page Object Model (POM) design
+Environment config via .env
+CI integration with GitHub Actions
+HTML reports and test data fixtures
+Screenshots + video on failures
+Modular test folder structure
+Linting & clean code practices
+📁 Folder Structure
+Folder / File	Purpose
+tests/	Test specs organized by feature
+pages/	Page Object Models (POM)
+utils/	Helpers like logger, data utils
+test-data/	Static test data in JSON
+config/	Different configs for envs
+reports/	Auto-generated test reports
+.github/workflows/	GitHub CI/CD workflows
