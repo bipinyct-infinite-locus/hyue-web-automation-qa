@@ -1,6 +1,6 @@
-QA Automation Framework
+**QA Automation Framework
 🧪 QA Automation Framework – Playwright + JavaScript
-This is an industry-grade QA Automation Framework built using Playwright with JavaScript. Designed for scalability, clarity, and CI/CD readiness.
+This is an industry-grade QA Automation Framework built using Playwright with JavaScript. Designed for scalability, clarity, and CI/CD readiness.**
 
 🚀 Features
 Page Object Model (POM) design
