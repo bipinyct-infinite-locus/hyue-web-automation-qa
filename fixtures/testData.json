@@ -1,0 +1,14 @@
+{
+  "products": [
+    {
+      "name": "Wireless Headphones",
+      "expectedPrice": "$100",
+      "quantity": 2
+    },
+    {
+      "name": "Smartphone Case",
+      "expectedPrice": "$25",
+      "quantity": 3
+    }
+  ]
+}
