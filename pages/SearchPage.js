@@ -1,11 +1,9 @@
 // pages/SearchPage.js
-
 export class SearchPage {
   constructor(page) {
     this.page = page;
     this.searchInput = page.locator('#searchInHeader');
-    // this.searchButton = page.locator('#searchButton');
-    this.results = page.locator('.search-results .product-card');
+    this.results = page.locator('.search-results .product-card'); // adjust selector as per DOM
   }
 
   async navigate(path = '/') {
@@ -24,5 +22,9 @@ export class SearchPage {
 
   async getFirstResultText() {
     return await this.results.first().innerText();
+  }
+
+  async clickFirstResult() {
+    await this.results.first().click();
   }
 }
