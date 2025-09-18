@@ -1,24 +1,26 @@
 // pages/CartPage.js
+import { expect } from "@playwright/test";
+
 export class CartPage {
   constructor(page) {
     this.page = page;
 
     // Empty cart message text
-    this.emptyCartMsg = page.locator('text=You have no items in the cart');
+    this.emptyCartMsg = page.locator("text=You have no items in the cart");
 
     // "Start Shopping" button (can be <a> or <button>)
-    this.startShoppingBtn = page.locator('text=/Start Shopping/i');
+    this.startShoppingBtn = page.locator("text=/Start Shopping/i");
 
     // Home button (if needed)
     this.homeBtn = page.locator('button:has-text("Home")');
 
     // Cart modal (appears after Add to Cart, disappears after few sec)
     this.cartModalViewCart = page.locator(
-      'body > sht-cart-noti div:nth-child(3) > a:nth-child(1)'
+      "body > sht-cart-noti div:nth-child(3) > a:nth-child(1)"
     );
 
     // Main cart items (once you’re inside cart drawer/page)
-    this.cartItems = page.locator('.cart-item');
+    this.cartItems = page.locator(".cart-item");
 
     // Checkout button inside cart
     this.checkoutBtn = page.locator('button:has-text("Checkout")');
@@ -33,18 +35,20 @@ export class CartPage {
     // this.milestoneMsg = page.locator('.milestone-msg');
     // this.totalPrice = page.locator('.cart-total');
     // this.checkoutBtn = page.locator('button:has-text("Checkout")');
-    // this.discountPopup = page.locator('.discount-popup');
-    // this.popupClose = this.discountPopup.locator('button.close');
+    this.discountPopup = page.locator(".achievement-modal-content");
+    this.popupClose = this.discountPopup.locator(
+      "button[class='achievement-modal-close'] svg"
+    );
     // this.cartHeader = page.locator('.cart-header');
   }
 
-     // ✅ Opens the cart drawer from header
+  // ✅ Opens the cart drawer from header
   async openCart() {
-    const cartBtn = this.page.locator('#headerCartStatus');
+    const cartBtn = this.page.locator("#headerCartStatus");
     await cartBtn.scrollIntoViewIfNeeded();
     await cartBtn.click();
-    await this.page.locator('#shtCartDrawer').waitFor({
-      state: 'visible',
+    await this.page.locator("#shtCartDrawer").waitFor({
+      state: "visible",
       timeout: 10000,
     });
   }
@@ -53,7 +57,27 @@ export class CartPage {
   async clickViewCartFromModal() {
     if (await this.cartModalViewCart.isVisible()) {
       await this.cartModalViewCart.click();
-      await this.page.waitForLoadState('domcontentloaded');
+      await this.page.waitForLoadState("domcontentloaded");
+    }
+  }
+
+  // ✅ Wait for discount popup and verify text
+  async verifyDiscountPopup(expectedText) {
+    await expect(this.discountPopup).toContainText(expectedText, {
+      timeout: 10000,
+    });
+  }
+
+  // ✅ Wait until discount popup is visible (no expect here)
+  // async waitForDiscountPopup() {
+  //   await this.discountPopup.waitFor({ state: "visible", timeout: 10000 });
+  // }
+
+  // ✅ Close popup
+  async closeDiscountPopup() {
+    if (await this.popupClose.isVisible()) {
+      await this.popupClose.click();
+      await this.discountPopup.waitFor({ state: "hidden", timeout: 5000 });
     }
   }
 }
