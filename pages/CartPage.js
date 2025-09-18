@@ -5,44 +5,44 @@ export class CartPage {
   constructor(page) {
     this.page = page;
 
-    // Empty cart message text
+    // Empty cart message
     this.emptyCartMsg = page.locator("text=You have no items in the cart");
 
-    // "Start Shopping" button (can be <a> or <button>)
     this.startShoppingBtn = page.locator("text=/Start Shopping/i");
-
-    // Home button (if needed)
     this.homeBtn = page.locator('button:has-text("Home")');
 
-    // Cart modal (appears after Add to Cart, disappears after few sec)
+    // ✅ Added-to-cart modal
+    this.addedToCartModal = page.locator("sht-cart-noti");
+    this.addedToCartCloseBtn = this.addedToCartModal.locator("button.close");
+
+    // "View Cart" close button inside added-to-cart modal
     this.cartModalViewCart = page.locator(
-      "body > sht-cart-noti div:nth-child(3) > a:nth-child(1)"
+      "div[class='dialog__header d-flex middle-xs between-xs'] button[aria-label='Close'] svg"
     );
 
-    // Main cart items (once you’re inside cart drawer/page)
+    // Main cart items
     this.cartItems = page.locator(".cart-item");
-
-    // Checkout button inside cart
     this.checkoutBtn = page.locator('button:has-text("Checkout")');
-    // this.cartItems = page.locator('.cart-item');
-    // this.cartCount = page.locator('.cart-count');
-    // this.qtyPlus = page.locator("button[name='plus'] svg");
-    // this.qtyMinus = page.locator("button[name='minus']");
-    // this.deleteBtn = page.locator('svg[viewBox="0 0 12 14"]');
-    // this.deliveryCharge = page.locator('.delivery-charge');
-    // this.freeDeliveryMsg = page.locator('.free-delivery-msg');
-    // this.milestoneBar = page.locator('.milestone-progress-bar');
-    // this.milestoneMsg = page.locator('.milestone-msg');
-    // this.totalPrice = page.locator('.cart-total');
-    // this.checkoutBtn = page.locator('button:has-text("Checkout")');
-    this.discountPopup = page.locator(".achievement-modal-content");
-    this.popupClose = this.discountPopup.locator(
-      "button[class='achievement-modal-close'] svg"
+
+    // ✅ Discount popup
+    // ✅ Discount popup wrapper (active modal)
+    this.discountPopup = this.page.locator(
+      "#deliveryAchievement.achievement-content"
     );
-    // this.cartHeader = page.locator('.cart-header');
+
+    // ✅ Title (HURRAY!)
+    this.discountTitle = this.discountPopup.locator(".achievement-title");
+
+    // ✅ Message (₹100 OFF / ₹200 OFF etc.)
+    this.discountMessage = this.discountPopup.locator(
+      ".achievement-message span"
+    );
+
+    this.popupClose = this.discountPopup.locator(
+      "button.achievement-modal-close"
+    );
   }
 
-  // ✅ Opens the cart drawer from header
   async openCart() {
     const cartBtn = this.page.locator("#headerCartStatus");
     await cartBtn.scrollIntoViewIfNeeded();
@@ -53,7 +53,6 @@ export class CartPage {
     });
   }
 
-  // ✅ Click "View Cart" inside the Add-to-Cart modal (before it closes)
   async clickViewCartFromModal() {
     if (await this.cartModalViewCart.isVisible()) {
       await this.cartModalViewCart.click();
@@ -61,23 +60,36 @@ export class CartPage {
     }
   }
 
-  // ✅ Wait for discount popup and verify text
+  /**
+   * ✅ Handle the exact flow:
+   * - Wait for Product Added modal → let it disappear
+   * - Then wait for Discount popup to appear
+   * - Finally assert the expected text
+   */
   async verifyDiscountPopup(expectedText) {
-    await expect(this.discountPopup).toContainText(expectedText, {
-      timeout: 10000,
+    try {
+      await expect(this.addedToCartModal).toBeVisible({ timeout: 3000 });
+      await expect(this.addedToCartModal).toBeHidden({ timeout: 5000 });
+    } catch {
+      // continue if skipped
+    }
+
+    // Wait for discount modal
+    await expect(this.discountPopup).toBeVisible({ timeout: 10000 });
+
+    // Verify title
+    await expect(this.discountTitle).toHaveText("HURRAY!");
+
+    // Verify discount text (₹100 OFF / ₹200 OFF etc.)
+    await expect(this.discountMessage).toHaveText(expectedText, {
+      timeout: 5000,
     });
   }
 
-  // ✅ Wait until discount popup is visible (no expect here)
-  // async waitForDiscountPopup() {
-  //   await this.discountPopup.waitFor({ state: "visible", timeout: 10000 });
-  // }
-
-  // ✅ Close popup
   async closeDiscountPopup() {
     if (await this.popupClose.isVisible()) {
       await this.popupClose.click();
-      await this.discountPopup.waitFor({ state: "hidden", timeout: 5000 });
+      await expect(this.discountPopup).toBeHidden({ timeout: 5000 });
     }
   }
 }

@@ -77,21 +77,18 @@ test.describe("Milestone Cart", () => {
   // });
 
   test("TC_030 - Verify milestone discount popups (100 & 200 OFF)", async () => {
-    // Add 1st product
+    // Add 1st product → only "Product Added" modal, no discount popup
     await searchPage.searchForProduct("Lipstick");
     await productPage.addProductToCart(0);
-    // await cartPage.openCart();
-    // await expect(cartPage.discountPopup).toBeHidden(); // no popup after first product
-    // await cartPage.closeCart?.(); // optional if drawer needs closing before next add
 
-    // Add 2nd product
+    // Add 2nd product → Product Added modal closes, then Discount popup
     await productPage.addProductToCart(1);
-    await cartPage.verifyDiscountPopup("₹100 OFF");
+    await cartPage.verifyDiscountPopup("100 OFF");
     await cartPage.closeDiscountPopup();
 
-    // Add 3rd product
+    // Add 3rd product → Again flow repeats, then ₹200 OFF
     await productPage.addProductToCart(2);
-    await cartPage.verifyDiscountPopup("₹200 OFF");
+    await cartPage.verifyDiscountPopup("200 OFF");
     await cartPage.closeDiscountPopup();
   });
 });
